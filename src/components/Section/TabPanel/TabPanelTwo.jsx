@@ -171,9 +171,15 @@ export default function BasicGrid({ ...args }) {
         const tableResult = (out || []).map(element => {
             const dataElement = lodash.groupBy(departamentTable[element], 'ARMAS MEDIOS');
             const keys = Object.keys(dataElement)
+            const values = keys.map(x => ({ name: x, value: dataElement[x].length }));
+            let obj = {};
+            for (let i = 0; i < values.length; i++) {
+              obj[values[i].name] = values[i].value;
+            }
             return {
                 name: element,
-                value: keys.map(x => ({ name: x, value: dataElement[x].length }))
+                value: values,
+                obj
             }
         })
         setDepartamentTable(tableResult)
@@ -183,7 +189,7 @@ export default function BasicGrid({ ...args }) {
         setData(arr)
     }
 
-    console.log((dataBars || []).map(({ prop }) => ({ ...prop })));
+    console.log(departamentTable)
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -401,17 +407,17 @@ export default function BasicGrid({ ...args }) {
                         </TableHead>
                         <TableBody>
                             {
-                                departamentTable.map(({ name, value }) => (
+                                departamentTable.map(({ name, value,obj }) => (
                                     <TableRow
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
                                         <TableCell align="center">{name || ''}</TableCell>
-                                        <TableCell align="center">{value[0]?.value || 0}</TableCell>
-                                        <TableCell align="center">{value[1]?.value || 0}</TableCell>
-                                        <TableCell align="center">{value[2]?.value || 0}</TableCell>
-                                        <TableCell align="center">{value[3]?.value || 0}</TableCell>
-                                        <TableCell align="center">{value[4]?.value || 0}</TableCell>
-                                        <TableCell align="center">{value[5]?.value || 0}</TableCell>
+                                        <TableCell align="center">{obj['MOTO']|| 0}</TableCell>
+                                        <TableCell align="center">{obj['NO REPORTADO']|| 0}</TableCell>
+                                        <TableCell align="center">{obj['SIN EMPLEO DE ARMAS']|| 0}</TableCell>
+                                        <TableCell align="center">{obj['VEHICULO'] || 0}</TableCell>
+                                        <TableCell align="center">{obj['BICICLETA'] || 0}</TableCell>
+                                        <TableCell align="center">{obj['TREN']|| 0}</TableCell>
                                     </TableRow>
                                 ))
                             }

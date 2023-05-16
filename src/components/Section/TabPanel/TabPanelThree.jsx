@@ -51,6 +51,8 @@ export default function BasicGrid({ ...args }) {
 
     const [dataBars, setDataBars] = useState([]);
 
+    const [departamentTable, setDepartamentTable] = useState([]);
+
     const handleChange = (event) => {
         const { name, value } = event.target;
         if (name === 'departament') {
@@ -163,12 +165,30 @@ export default function BasicGrid({ ...args }) {
             name: key,
             number: dataResult[key]?.length
         }))
+
+        const departamentTable = lodash.groupBy((dataDB), 'DEPARTAMENTO');
+        const out = Object.keys(departamentTable);
+        const tableResult = (out || []).map(element => {
+            const dataElement = lodash.groupBy(departamentTable[element], 'CANTIDAD');
+            const keys = Object.keys(dataElement)
+            const values = keys.map(x => ({ name: x, value: dataElement[x].length }));
+            let obj = {};
+            for (let i = 0; i < values.length; i++) {
+              obj[values[i].name] = values[i].value;
+            }
+            return {
+                name: element,
+                obj
+            }
+        })
+        setDepartamentTable(tableResult)
+
         setDataBars(dataObject);
         const arr = (amountData || []).map(key => dataResult[key]?.length)
         setData(arr)
     }
 
-    console.log((dataBars || []).map(({ prop }) => ({ ...prop })));
+    console.log(departamentTable);
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -367,6 +387,41 @@ export default function BasicGrid({ ...args }) {
                                     ))
                                 }
                             </TableRow>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Box>
+            <Div sx={{ mt: 2 }}>Listado a nivel Departamental</Div>
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+                <TableContainer component={Paper} sx={{ mt: 3, maxWidth: 1300 }}>
+                    <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align='center'>Departamento</TableCell>
+                                {[1, 2, 3, 4, 6, 7, 5, 16].map(id => (
+                                    <TableCell align="center" key={(id + id)}>{id}</TableCell>
+                                ))}
+
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {
+                                departamentTable.map(({ name, obj }) => (
+                                    <TableRow
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                        <TableCell align="center">{name || ''}</TableCell>
+                                        <TableCell align="center">{obj['1']|| 0}</TableCell>
+                                        <TableCell align="center">{obj['2']|| 0}</TableCell>
+                                        <TableCell align="center">{obj['3']|| 0}</TableCell>
+                                        <TableCell align="center">{obj['4']|| 0}</TableCell>
+                                        <TableCell align="center">{obj['6']|| 0}</TableCell>
+                                        <TableCell align="center">{obj['7']|| 0}</TableCell>
+                                        <TableCell align="center">{obj['5']|| 0}</TableCell>
+                                        <TableCell align="center">{obj['16']|| 0}</TableCell>
+                                    </TableRow>
+                                ))
+                            }
                         </TableBody>
                     </Table>
                 </TableContainer>

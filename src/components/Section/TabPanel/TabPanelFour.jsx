@@ -50,6 +50,8 @@ export default function BasicGrid({ ...args }) {
 
     const [dataBars, setDataBars] = useState([]);
 
+    const [departamentTable, setDepartamentTable] = useState([]);
+
     const handleChange = (event) => {
         const { name, value } = event.target;
         if (name === 'departament') {
@@ -162,6 +164,26 @@ export default function BasicGrid({ ...args }) {
             name: key,
             number: dataResult[key]?.length
         }))
+
+
+        const departamentTable = lodash.groupBy((dataDB), 'DEPARTAMENTO');
+        const out = Object.keys(departamentTable);
+        const tableResult = (out || []).map(element => {
+            const dataElement = lodash.groupBy(departamentTable[element], 'GRUPO ETARÍO');
+            const keys = Object.keys(dataElement)
+            const values = keys.map(x => ({ name: x, value: dataElement[x].length }));
+            let obj = {};
+            for (let i = 0; i < values.length; i++) {
+              obj[values[i].name] = values[i].value;
+            }
+            return {
+                name: element,
+                obj
+            }
+        })
+        setDepartamentTable(tableResult)
+
+
         setDataBars(dataObject);
         const arr = (ageGroupData || []).map(key => dataResult[key]?.length)
         setData(arr)
@@ -370,6 +392,38 @@ export default function BasicGrid({ ...args }) {
                     </Table>
                 </TableContainer>
 
+            </Box>
+            <Div sx={{ mt: 2 }}>Listado a nivel Departamental</Div>
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+                <TableContainer component={Paper} sx={{ mt: 3, maxWidth: 1300 }}>
+                    <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align='center'>Departamento</TableCell>
+                                {['ADULTOS', 'ADOLESCENTES', 'MENORES', 'NO REPORTADO'].map(id => (
+                                    <TableCell align="center" key={(id + id)}>{id}</TableCell>
+                                ))}
+
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {
+                                departamentTable.map(({ name, obj }) => (
+                                    <TableRow
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                        <TableCell align="center">{name || ''}</TableCell>
+                                        <TableCell align="center">{obj['ADULTOS']|| 0}</TableCell>
+                                        <TableCell align="center">{obj['ADOLESCENTES']|| 0}</TableCell>
+                                        <TableCell align="center">{obj['MENORES']|| 0}</TableCell>
+                                        <TableCell align="center">{obj['NO REPORTADO']|| 0}</TableCell>
+
+                                    </TableRow>
+                                ))
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </Box>
 
 

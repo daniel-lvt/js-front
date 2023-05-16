@@ -7,6 +7,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Home from '../Home/Home'
 import TabOne from './TabPanel/TabPanelOne';
 import TabTwo from './TabPanel/TabPanelTwo';
 import TabThree from './TabPanel/TabPanelThree'
@@ -102,13 +103,13 @@ export default function FullWidthTabs() {
         console.log(error);
       });
     axios.get('http://localhost:5000/api/group?filter=GRUPO ETARÍO')
-    .then(response => {
-      const { data: { data } } = response;
-      setAgeGroup(data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
+      .then(response => {
+        const { data: { data } } = response;
+        setAgeGroup(data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }, []);
 
   const handleChange = (event, newValue) => {
@@ -139,7 +140,7 @@ export default function FullWidthTabs() {
           <Tab label="Genero" {...a11yProps(1)} />
           <Tab label="Armas Medios" {...a11yProps(2)} />
           <Tab label="Fallecidos" {...a11yProps(3)} />
-          <Tab label="Item Three" {...a11yProps(4)} />
+          <Tab label="Grupo Etario" {...a11yProps(4)} />
           <Tab label="Item Three" {...a11yProps(5)} />
           <Tab label="Item Three" {...a11yProps(6)} />
 
@@ -151,7 +152,7 @@ export default function FullWidthTabs() {
         onChangeIndex={handleChangeIndex}
       >
         <TabPanel value={value} index={0} dir={theme.direction}>
-          Item Three
+          <Home />
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>
           <TabOne
@@ -183,9 +184,6 @@ export default function FullWidthTabs() {
         </TabPanel>
         <TabPanel value={value} index={5} dir={theme.direction}>
           Item Five
-        </TabPanel>
-        <TabPanel value={value} index={6} dir={theme.direction}>
-          Item Six
         </TabPanel>
       </SwipeableViews>
     </Box>
